@@ -1,0 +1,1377 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Make it easy - 学生証認証で安心のマッチングサービス</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Montserrat:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --emerald-400: #34D399;
+            --emerald-500: #10B981;
+            --emerald-600: #059669;
+            --emerald-700: #047857;
+            --blue-500: #3B82F6;
+            --blue-600: #2563EB;
+            --indigo-500: #6366F1;
+            --indigo-600: #4F46E5;
+            --pink-500: #EC4899;
+            --orange-500: #F97316;
+            --slate-50: #F8FAFC;
+            --slate-100: #F1F5F9;
+            --slate-200: #E2E8F0;
+            --slate-300: #CBD5E1;
+            --slate-600: #475569;
+            --slate-700: #334155;
+            --slate-800: #1E293B;
+            --slate-900: #0F172A;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background: linear-gradient(135deg, var(--slate-50) 0%, #E0F2FE 100%);
+            color: var(--slate-800);
+            overflow-x: hidden;
+            padding-bottom: 80px;
+        }
+
+        .container {
+            max-width: 430px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            box-shadow: 0 0 30px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        /* Section Management */
+        .section {
+            display: none;
+            min-height: calc(100vh - 80px);
+            padding-bottom: 20px;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 430px;
+            background: white;
+            border-top: 1px solid var(--slate-200);
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+            z-index: 1000;
+        }
+
+        .nav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            background: none;
+            border: none;
+            padding: 8px 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--slate-600);
+        }
+
+        .nav-item i {
+            font-size: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-item span {
+            font-size: 11px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .nav-item.active {
+            color: var(--emerald-500);
+        }
+
+        .nav-item.active i {
+            transform: scale(1.1);
+        }
+
+        .nav-item:hover:not(.active) {
+            color: var(--emerald-400);
+        }
+
+        /* ============================================================
+           SECTION 1: ホーム (FV - Hero)
+           ============================================================ */
+        .hero {
+            background: linear-gradient(135deg, var(--emerald-500) 0%, var(--blue-500) 100%);
+            padding: 60px 24px 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg width="40" height="40" xmlns="http://www.w3.org/2000/svg"><circle cx="2" cy="2" r="1" fill="rgba(255,255,255,0.1)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 32px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 12px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .tagline {
+            font-size: 16px;
+            color: rgba(255,255,255,0.95);
+            margin-bottom: 24px;
+            font-weight: 500;
+        }
+
+        .badge-container {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            background: rgba(255,255,255,0.25);
+            backdrop-filter: blur(10px);
+            padding: 8px 16px;
+            border-radius: 20px;
+            color: white;
+            font-size: 13px;
+            font-weight: 600;
+            border: 1px solid rgba(255,255,255,0.3);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .badge i {
+            font-size: 14px;
+        }
+
+        .hero-image {
+            width: 100%;
+            max-width: 350px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            margin: 24px auto;
+        }
+
+        .campaign-banner {
+            background: linear-gradient(135deg, var(--pink-500), var(--orange-500));
+            color: white;
+            padding: 16px 20px;
+            border-radius: 16px;
+            margin: 24px 0;
+            box-shadow: 0 8px 20px rgba(236,72,153,0.3);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        .campaign-banner h3 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .campaign-banner p {
+            font-size: 14px;
+            opacity: 0.95;
+        }
+
+        .cta-button {
+            background: linear-gradient(135deg, white, var(--slate-50));
+            color: var(--emerald-600);
+            padding: 16px 32px;
+            border-radius: 30px;
+            font-size: 18px;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 28px rgba(0,0,0,0.3);
+        }
+
+        /* ============================================================
+           SECTION 2: 登録済みグループ (Member Cards)
+           ============================================================ */
+        .groups-section {
+            padding: 24px;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 32px;
+            padding-top: 20px;
+        }
+
+        .section-header h2 {
+            font-size: 28px;
+            font-weight: 900;
+            color: var(--slate-900);
+            margin-bottom: 12px;
+        }
+
+        .section-header p {
+            font-size: 15px;
+            color: var(--slate-600);
+        }
+
+        .ticker-container {
+            overflow: hidden;
+            margin-bottom: 32px;
+            background: var(--slate-50);
+            padding: 16px 0;
+            border-radius: 12px;
+        }
+
+        .ticker-wrapper {
+            display: flex;
+        }
+
+        .ticker-content {
+            display: flex;
+            gap: 16px;
+            animation: ticker 20s linear infinite;
+            will-change: transform;
+        }
+
+        @keyframes ticker {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .member-card {
+            min-width: 280px;
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            border: 2px solid var(--slate-100);
+        }
+
+        .member-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .member-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--emerald-400), var(--blue-500));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .member-info h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--slate-900);
+            margin-bottom: 2px;
+        }
+
+        .member-info p {
+            font-size: 13px;
+            color: var(--slate-600);
+        }
+
+        .verified-badge {
+            background: var(--emerald-50);
+            color: var(--emerald-700);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-bottom: 12px;
+        }
+
+        .member-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .tag {
+            background: var(--slate-100);
+            color: var(--slate-700);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        /* ============================================================
+           SECTION 3: 登録 (Registration Form)
+           ============================================================ */
+        .register-section {
+            padding: 24px;
+        }
+
+        .form-container {
+            background: white;
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--slate-700);
+            margin-bottom: 8px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--slate-200);
+            border-radius: 12px;
+            font-size: 15px;
+            font-family: 'Noto Sans JP', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--emerald-500);
+            box-shadow: 0 0 0 3px rgba(16,185,129,0.1);
+        }
+
+        .file-upload {
+            border: 2px dashed var(--slate-300);
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .file-upload:hover {
+            border-color: var(--emerald-500);
+            background: var(--emerald-50);
+        }
+
+        .file-upload i {
+            font-size: 32px;
+            color: var(--emerald-500);
+            margin-bottom: 8px;
+        }
+
+        .file-upload p {
+            font-size: 14px;
+            color: var(--slate-600);
+        }
+
+        .submit-button {
+            background: linear-gradient(135deg, var(--emerald-500), var(--emerald-600));
+            color: white;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .submit-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(16,185,129,0.3);
+        }
+
+        /* ============================================================
+           SECTION 4: システム説明 (Combined p2,3,5,6)
+           ============================================================ */
+        .system-section {
+            padding: 24px;
+        }
+
+        .subsection {
+            margin-bottom: 40px;
+        }
+
+        .subsection-title {
+            font-size: 24px;
+            font-weight: 900;
+            color: var(--slate-900);
+            text-align: center;
+            margin-bottom: 24px;
+            padding-top: 20px;
+        }
+
+        .merit-grid {
+            display: grid;
+            gap: 16px;
+        }
+
+        .merit-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            border-left: 4px solid var(--emerald-500);
+            transition: all 0.3s ease;
+        }
+
+        .merit-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+        }
+
+        .merit-card h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--slate-900);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .merit-card h3 i {
+            color: var(--emerald-500);
+            font-size: 20px;
+        }
+
+        .merit-card p {
+            font-size: 14px;
+            color: var(--slate-600);
+            line-height: 1.6;
+        }
+
+        .features-grid {
+            display: grid;
+            gap: 20px;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, var(--emerald-50), var(--blue-50));
+            border-radius: 20px;
+            padding: 24px;
+            border: 2px solid var(--emerald-100);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 32px rgba(16,185,129,0.2);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, var(--emerald-500), var(--emerald-600));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+        }
+
+        .feature-icon i {
+            font-size: 28px;
+            color: white;
+        }
+
+        .feature-card h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--slate-900);
+            margin-bottom: 8px;
+        }
+
+        .feature-card p {
+            font-size: 14px;
+            color: var(--slate-700);
+            line-height: 1.6;
+        }
+
+        .flow-steps {
+            display: grid;
+            gap: 16px;
+        }
+
+        .flow-step {
+            display: flex;
+            gap: 16px;
+            background: white;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .step-number {
+            flex-shrink: 0;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--emerald-500), var(--blue-500));
+            color: white;
+            font-size: 18px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .step-content h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--slate-900);
+            margin-bottom: 4px;
+        }
+
+        .step-content p {
+            font-size: 14px;
+            color: var(--slate-600);
+            line-height: 1.6;
+        }
+
+        .policy-box {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            border: 2px solid var(--slate-100);
+        }
+
+        .policy-box h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--slate-900);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .policy-box h3 i {
+            color: var(--blue-500);
+        }
+
+        .policy-box p {
+            font-size: 14px;
+            color: var(--slate-700);
+            line-height: 1.8;
+            margin-bottom: 12px;
+        }
+
+        .policy-box ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .policy-box ul li {
+            font-size: 14px;
+            color: var(--slate-700);
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+
+        .policy-box ul li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--emerald-500);
+            font-weight: 700;
+        }
+
+        /* ============================================================
+           SECTION 5: よくある質問 (FAQ + Footer)
+           ============================================================ */
+        .faq-section {
+            padding: 24px;
+        }
+
+        .faq-item {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            border-left: 4px solid var(--blue-500);
+        }
+
+        .faq-question {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--slate-900);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .faq-question i {
+            color: var(--blue-500);
+            margin-top: 2px;
+        }
+
+        .faq-answer {
+            font-size: 14px;
+            color: var(--slate-700);
+            line-height: 1.8;
+            padding-left: 24px;
+        }
+
+        .footer {
+            background: var(--slate-900);
+            color: white;
+            padding: 32px 24px;
+            margin-top: 40px;
+            border-radius: 20px 20px 0 0;
+        }
+
+        .footer-content {
+            text-align: center;
+        }
+
+        .footer-logo {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--emerald-400);
+        }
+
+        .footer-social {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            transition: all 0.3s ease;
+        }
+
+        .social-icon:hover {
+            background: var(--emerald-500);
+            transform: translateY(-3px);
+        }
+
+        .footer-copyright {
+            font-size: 12px;
+            color: rgba(255,255,255,0.6);
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- ============================================================
+             SECTION 1: ホーム (FV)
+             ============================================================ -->
+        <section id="home" class="section active">
+            <div class="hero">
+                <div class="hero-content">
+                    <h1 class="logo">Make it easy</h1>
+                    <p class="tagline">学生証認証で始める、安心のマッチングサービス</p>
+
+                    <div class="badge-container">
+                        <div class="badge">
+                            <i class="fas fa-id-card"></i>
+                            学生証認証済み
+                        </div>
+                        <div class="badge">
+                            <i class="fas fa-shield-alt"></i>
+                            安心・安全
+                        </div>
+                    </div>
+
+                    <img src="https://page.gensparksite.com/slides_images/e73023cb177b6c993bbb3f3376bb2cd1.webp" 
+                         alt="Make it easy Hero Image" 
+                         class="hero-image">
+
+                    <div class="campaign-banner">
+                        <h3>🎉 期間限定キャンペーン</h3>
+                        <p>今なら登録無料＆初月50%OFF</p>
+                    </div>
+
+                    <button class="cta-button" onclick="showSection('register')">
+                        今すぐ無料で始める
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================
+             SECTION 2: 登録済みグループ
+             ============================================================ -->
+        <section id="groups" class="section">
+            <div class="groups-section">
+                <div class="section-header">
+                    <h2>登録済みグループ</h2>
+                    <p>学生証認証済みの安心できるメンバーたち</p>
+                </div>
+
+                <div class="ticker-container">
+                    <div class="ticker-wrapper">
+                        <div class="ticker-content">
+                            <!-- First Set -->
+                            <div class="member-card">
+                                <div class="member-header">
+                                    <div class="member-avatar">A</div>
+                                    <div class="member-info">
+                                        <h3>田中さん</h3>
+                                        <p>慶應義塾大学 3年</p>
+                                    </div>
+                                </div>
+                                <div class="verified-badge">
+                                    <i class="fas fa-check-circle"></i>
+                                    学生証認証済み
+                                </div>
+                                <div class="member-tags">
+                                    <span class="tag">テニス</span>
+                                    <span class="tag">旅行</span>
+                                    <span class="tag">カフェ巡り</span>
+                                </div>
+                            </div>
+
+                            <div class="member-card">
+                                <div class="member-header">
+                                    <div class="member-avatar">B</div>
+                                    <div class="member-info">
+                                        <h3>佐藤さん</h3>
+                                        <p>早稲田大学 2年</p>
+                                    </div>
+                                </div>
+                                <div class="verified-badge">
+                                    <i class="fas fa-check-circle"></i>
+                                    学生証認証済み
+                                </div>
+                                <div class="member-tags">
+                                    <span class="tag">音楽</span>
+                                    <span class="tag">映画</span>
+                                    <span class="tag">読書</span>
+                                </div>
+                            </div>
+
+                            <div class="member-card">
+                                <div class="member-header">
+                                    <div class="member-avatar">C</div>
+                                    <div class="member-info">
+                                        <h3>鈴木さん</h3>
+                                        <p>東京大学 4年</p>
+                                    </div>
+                                </div>
+                                <div class="verified-badge">
+                                    <i class="fas fa-check-circle"></i>
+                                    学生証認証済み
+                                </div>
+                                <div class="member-tags">
+                                    <span class="tag">プログラミング</span>
+                                    <span class="tag">ゲーム</span>
+                                </div>
+                            </div>
+
+                            <div class="member-card">
+                                <div class="member-header">
+                                    <div class="member-avatar">D</div>
+                                    <div class="member-info">
+                                        <h3>高橋さん</h3>
+                                        <p>明治大学 1年</p>
+                                    </div>
+                                </div>
+                                <div class="verified-badge">
+                                    <i class="fas fa-check-circle"></i>
+                                    学生証認証済み
+                                </div>
+                                <div class="member-tags">
+                                    <span class="tag">ダンス</span>
+                                    <span class="tag">料理</span>
+                                    <span class="tag">写真</span>
+                                </div>
+                            </div>
+
+                            <!-- Duplicate for infinite scroll -->
+                            <div class="member-card">
+                                <div class="member-header">
+                                    <div class="member-avatar">A</div>
+                                    <div class="member-info">
+                                        <h3>田中さん</h3>
+                                        <p>慶應義塾大学 3年</p>
+                                    </div>
+                                </div>
+                                <div class="verified-badge">
+                                    <i class="fas fa-check-circle"></i>
+                                    学生証認証済み
+                                </div>
+                                <div class="member-tags">
+                                    <span class="tag">テニス</span>
+                                    <span class="tag">旅行</span>
+                                    <span class="tag">カフェ巡り</span>
+                                </div>
+                            </div>
+
+                            <div class="member-card">
+                                <div class="member-header">
+                                    <div class="member-avatar">B</div>
+                                    <div class="member-info">
+                                        <h3>佐藤さん</h3>
+                                        <p>早稲田大学 2年</p>
+                                    </div>
+                                </div>
+                                <div class="verified-badge">
+                                    <i class="fas fa-check-circle"></i>
+                                    学生証認証済み
+                                </div>
+                                <div class="member-tags">
+                                    <span class="tag">音楽</span>
+                                    <span class="tag">映画</span>
+                                    <span class="tag">読書</span>
+                                </div>
+                            </div>
+
+                            <div class="member-card">
+                                <div class="member-header">
+                                    <div class="member-avatar">C</div>
+                                    <div class="member-info">
+                                        <h3>鈴木さん</h3>
+                                        <p>東京大学 4年</p>
+                                    </div>
+                                </div>
+                                <div class="verified-badge">
+                                    <i class="fas fa-check-circle"></i>
+                                    学生証認証済み
+                                </div>
+                                <div class="member-tags">
+                                    <span class="tag">プログラミング</span>
+                                    <span class="tag">ゲーム</span>
+                                </div>
+                            </div>
+
+                            <div class="member-card">
+                                <div class="member-header">
+                                    <div class="member-avatar">D</div>
+                                    <div class="member-info">
+                                        <h3>高橋さん</h3>
+                                        <p>明治大学 1年</p>
+                                    </div>
+                                </div>
+                                <div class="verified-badge">
+                                    <i class="fas fa-check-circle"></i>
+                                    学生証認証済み
+                                </div>
+                                <div class="member-tags">
+                                    <span class="tag">ダンス</span>
+                                    <span class="tag">料理</span>
+                                    <span class="tag">写真</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================
+             SECTION 3: 登録
+             ============================================================ -->
+        <section id="register" class="section">
+            <div class="register-section">
+                <div class="section-header">
+                    <h2>新規登録</h2>
+                    <p>学生証認証で安心・安全なマッチングを</p>
+                </div>
+
+                <form class="form-container" onsubmit="handleRegister(event)">
+                    <div class="form-group">
+                        <label for="name">お名前 *</label>
+                        <input type="text" id="name" required placeholder="山田 太郎">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">メールアドレス *</label>
+                        <input type="email" id="email" required placeholder="example@university.ac.jp">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="university">大学名 *</label>
+                        <input type="text" id="university" required placeholder="○○大学">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="grade">学年 *</label>
+                        <select id="grade" required>
+                            <option value="">選択してください</option>
+                            <option value="1">1年生</option>
+                            <option value="2">2年生</option>
+                            <option value="3">3年生</option>
+                            <option value="4">4年生</option>
+                            <option value="other">その他</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="student-id">学生証アップロード *</label>
+                        <div class="file-upload" onclick="document.getElementById('student-id-file').click()">
+                            <i class="fas fa-id-card"></i>
+                            <p>クリックして学生証の写真を選択</p>
+                            <input type="file" id="student-id-file" accept="image/*" style="display:none;" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="photo">プロフィール写真 *</label>
+                        <div class="file-upload" onclick="document.getElementById('photo-file').click()">
+                            <i class="fas fa-camera"></i>
+                            <p>クリックして写真を選択</p>
+                            <input type="file" id="photo-file" accept="image/*" style="display:none;" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="interests">興味・趣味</label>
+                        <input type="text" id="interests" placeholder="例: テニス、映画鑑賞、カフェ巡り">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="bio">自己紹介</label>
+                        <textarea id="bio" rows="4" placeholder="簡単な自己紹介を入力してください"></textarea>
+                    </div>
+
+                    <button type="submit" class="submit-button">
+                        登録する
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- ============================================================
+             SECTION 4: システム説明 (p2,3,5,6統合)
+             ============================================================ -->
+        <section id="system" class="section">
+            <div class="system-section">
+                <div class="section-header">
+                    <h2>システム説明</h2>
+                    <p>Make it easyの特徴と使い方</p>
+                </div>
+
+                <!-- MERIT (p2) -->
+                <div class="subsection">
+                    <h3 class="subsection-title">🎯 MERIT</h3>
+                    <div class="merit-grid">
+                        <div class="merit-card">
+                            <h3><i class="fas fa-shield-alt"></i> 安心・安全な出会い</h3>
+                            <p>学生証による本人確認を徹底。全ユーザーが学生証認証済みなので、安心してマッチングできます。</p>
+                        </div>
+                        <div class="merit-card">
+                            <h3><i class="fas fa-users"></i> 同世代との繋がり</h3>
+                            <p>同じ大学生同士だから、共通の話題も多く、自然な出会いが生まれます。</p>
+                        </div>
+                        <div class="merit-card">
+                            <h3><i class="fas fa-heart"></i> 真剣な出会い</h3>
+                            <p>本人確認済みのユーザーのみなので、真剣に出会いを求める人と繋がれます。</p>
+                        </div>
+                        <div class="merit-card">
+                            <h3><i class="fas fa-mobile-alt"></i> 簡単操作</h3>
+                            <p>スマホで簡単に登録・マッチング。忙しい学生生活の中でも手軽に利用できます。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3つの特徴 (p3) -->
+                <div class="subsection">
+                    <h3 class="subsection-title">✨ 3つの特徴</h3>
+                    <div class="features-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-id-card-alt"></i>
+                            </div>
+                            <h3>学生証認証システム</h3>
+                            <p>全ユーザーが学生証による本人確認を完了。なりすましや不正利用を防ぎ、安心して利用できる環境を提供します。</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-search"></i>
+                            </div>
+                            <h3>マッチング機能</h3>
+                            <p>趣味や興味、大学などの条件で検索可能。あなたに合った相手を簡単に見つけられます。</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-comments"></i>
+                            </div>
+                            <h3>メッセージ機能</h3>
+                            <p>マッチング後は安全なメッセージ機能でやり取り。個人情報を守りながらコミュニケーションできます。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 利用の流れ (p5) -->
+                <div class="subsection">
+                    <h3 class="subsection-title">📋 利用の流れ</h3>
+                    <div class="flow-steps">
+                        <div class="flow-step">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <h3>会員登録</h3>
+                                <p>メールアドレスと基本情報を入力して登録。簡単3分で完了します。</p>
+                            </div>
+                        </div>
+                        <div class="flow-step">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <h3>学生証認証</h3>
+                                <p>学生証の写真をアップロード。運営が確認後、認証バッジが付与されます。</p>
+                            </div>
+                        </div>
+                        <div class="flow-step">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <h3>プロフィール作成</h3>
+                                <p>写真や趣味、自己紹介を登録。魅力的なプロフィールを作りましょう。</p>
+                            </div>
+                        </div>
+                        <div class="flow-step">
+                            <div class="step-number">4</div>
+                            <div class="step-content">
+                                <h3>マッチング</h3>
+                                <p>気になる相手を探して「いいね」を送信。相手も「いいね」を返したらマッチング成立！</p>
+                            </div>
+                        </div>
+                        <div class="flow-step">
+                            <div class="step-number">5</div>
+                            <div class="step-content">
+                                <h3>メッセージ交換</h3>
+                                <p>マッチング後は自由にメッセージ交換。お互いを知って、実際に会うきっかけに。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 返金ポリシー (p6) -->
+                <div class="subsection">
+                    <h3 class="subsection-title">💰 返金ポリシー</h3>
+                    <div class="policy-box">
+                        <h3><i class="fas fa-shield-alt"></i> 安心の返金保証</h3>
+                        <p>Make it easyでは、ユーザーの皆様に安心してご利用いただけるよう、以下の返金ポリシーを設けています。</p>
+
+                        <h3 style="margin-top: 20px;">返金対象となるケース</h3>
+                        <ul>
+                            <li>学生証認証が不承認となった場合</li>
+                            <li>システムの不具合により正常にサービスを利用できない場合</li>
+                            <li>登録後7日以内で、マッチング実績がない場合</li>
+                            <li>運営の判断により、返金が適切と認められた場合</li>
+                        </ul>
+
+                        <p style="margin-top: 16px;">返金をご希望の場合は、サポート窓口までお問い合わせください。状況を確認の上、速やかに対応いたします。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================
+             SECTION 5: よくある質問 (p7,8統合)
+             ============================================================ -->
+        <section id="faq" class="section">
+            <div class="faq-section">
+                <div class="section-header">
+                    <h2>よくある質問</h2>
+                    <p>Make it easyについての疑問にお答えします</p>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <i class="fas fa-question-circle"></i>
+                        <span>学生証認証は必須ですか？</span>
+                    </div>
+                    <div class="faq-answer">
+                        はい、全ユーザーに学生証認証を必須としています。これにより、安心・安全なマッチング環境を提供しています。
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <i class="fas fa-question-circle"></i>
+                        <span>学生証の情報はどのように管理されますか？</span>
+                    </div>
+                    <div class="faq-answer">
+                        学生証の情報は厳重に管理され、本人確認の目的でのみ使用されます。第三者に提供されることはありません。
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <i class="fas fa-question-circle"></i>
+                        <span>利用料金はいくらですか？</span>
+                    </div>
+                    <div class="faq-answer">
+                        基本登録は無料です。プレミアムプランは月額2,980円で、より多くの機能をご利用いただけます。今なら初月50%OFFキャンペーン実施中！
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <i class="fas fa-question-circle"></i>
+                        <span>マッチングしないと料金はかかりませんか？</span>
+                    </div>
+                    <div class="faq-answer">
+                        基本機能は完全無料でご利用いただけます。プレミアムプランは月額制ですが、マッチングの有無に関わらず一定の料金となります。
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <i class="fas fa-question-circle"></i>
+                        <span>卒業後も利用できますか？</span>
+                    </div>
+                    <div class="faq-answer">
+                        申し訳ございませんが、本サービスは在学中の学生のみを対象としています。卒業後は利用できなくなります。
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <i class="fas fa-question-circle"></i>
+                        <span>退会方法を教えてください</span>
+                    </div>
+                    <div class="faq-answer">
+                        アプリ内の設定画面から、いつでも簡単に退会手続きを行うことができます。退会後、すべてのデータは削除されます。
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <i class="fas fa-question-circle"></i>
+                        <span>不適切なユーザーを報告できますか？</span>
+                    </div>
+                    <div class="faq-answer">
+                        はい、各ユーザープロフィールから報告機能をご利用いただけます。運営が速やかに確認し、適切な対応を行います。
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <i class="fas fa-question-circle"></i>
+                        <span>個人情報は安全ですか？</span>
+                    </div>
+                    <div class="faq-answer">
+                        はい、最新のセキュリティ技術により、お客様の個人情報を厳重に保護しています。SSL暗号化通信を採用し、データの安全性を確保しています。
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <div class="footer">
+                    <div class="footer-content">
+                        <div class="footer-logo">Make it easy</div>
+
+                        <div class="footer-links">
+                            <a href="#">利用規約</a>
+                            <a href="#">プライバシーポリシー</a>
+                            <a href="#">特定商取引法</a>
+                            <a href="#">お問い合わせ</a>
+                        </div>
+
+                        <div class="footer-social">
+                            <div class="social-icon">
+                                <i class="fab fa-twitter"></i>
+                            </div>
+                            <div class="social-icon">
+                                <i class="fab fa-instagram"></i>
+                            </div>
+                            <div class="social-icon">
+                                <i class="fab fa-facebook"></i>
+                            </div>
+                            <div class="social-icon">
+                                <i class="fab fa-line"></i>
+                            </div>
+                        </div>
+
+                        <div class="footer-copyright">
+                            © 2024 Make it easy. All rights reserved.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <button class="nav-item active" onclick="showSection('home')" data-section="home">
+                <i class="fas fa-home"></i>
+                <span>ホーム</span>
+            </button>
+            <button class="nav-item" onclick="showSection('groups')" data-section="groups">
+                <i class="fas fa-users"></i>
+                <span>グループ</span>
+            </button>
+            <button class="nav-item" onclick="showSection('register')" data-section="register">
+                <i class="fas fa-user-plus"></i>
+                <span>登録</span>
+            </button>
+            <button class="nav-item" onclick="showSection('system')" data-section="system">
+                <i class="fas fa-info-circle"></i>
+                <span>説明</span>
+            </button>
+            <button class="nav-item" onclick="showSection('faq')" data-section="faq">
+                <i class="fas fa-question-circle"></i>
+                <span>FAQ</span>
+            </button>
+        </nav>
+    </div>
+
+    <script>
+        // Section switching function
+        function showSection(sectionId) {
+            // Hide all sections
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Show selected section
+            const targetSection = document.getElementById(sectionId);
+            if (targetSection) {
+                targetSection.classList.add('active');
+                window.scrollTo(0, 0);
+            }
+
+            // Update nav active state
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('data-section') === sectionId) {
+                    item.classList.add('active');
+                }
+            });
+        }
+
+        // Registration form handler
+        function handleRegister(event) {
+            event.preventDefault();
+
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const university = document.getElementById('university').value;
+            const grade = document.getElementById('grade').value;
+
+            if (name && email && university && grade) {
+                alert('✅ 登録が完了しました！\n学生証の認証が完了次第、メールでご連絡いたします。\n\n登録済みグループをご覧ください。');
+                showSection('groups');
+            }
+        }
+
+        // File upload preview handlers
+        document.getElementById('student-id-file').addEventListener('change', function(e) {
+            if (e.target.files.length > 0) {
+                const fileName = e.target.files[0].name;
+                e.target.parentElement.querySelector('p').textContent = `選択済み: ${fileName}`;
+            }
+        });
+
+        document.getElementById('photo-file').addEventListener('change', function(e) {
+            if (e.target.files.length > 0) {
+                const fileName = e.target.files[0].name;
+                e.target.parentElement.querySelector('p').textContent = `選択済み: ${fileName}`;
+            }
+        });
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Ensure home section is active on load
+            showSection('home');
+        });
+    </script>
+</body>
+</html>
